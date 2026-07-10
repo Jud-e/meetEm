@@ -50,6 +50,7 @@ class WelcomeScreen extends StatelessWidget {
                   const SizedBox(height: 28),
                   ElevatedButton(
                     onPressed: onGetStarted,
+                    // style: theme.elevatedButtonTheme,
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
