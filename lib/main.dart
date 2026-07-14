@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:meetup_app/screens/onboarding_flow.dart';
+import 'package:meetup_app/services/onboarding_flow.dart';
 import 'package:meetup_app/theme/app_theme.dart';
 import 'firebase_options.dart';
 

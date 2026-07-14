@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'welcome_screen.dart';
-import 'signup.dart';
-import 'login.dart';
-import 'username_pick.dart';
-import 'success_screen.dart';
+import '../screens/welcome_screen.dart';
+import '../screens/signup.dart';
+import '../screens/login.dart';
+import '../screens/username_pick.dart';
+import '../screens/success_screen.dart';
 
 
 class OnboardingFlow extends StatelessWidget {
