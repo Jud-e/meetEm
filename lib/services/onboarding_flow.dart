@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:meetup_app/screens/home.dart';
 import '../screens/welcome_screen.dart';
 import '../screens/signup.dart';
 import '../screens/login.dart';
 import '../screens/username_pick.dart';
-import '../screens/success_screen.dart';
-
+import '../screens/success_screen.dart'; // adjust if you placed this somewhere else
 
 class OnboardingFlow extends StatelessWidget {
-  final VoidCallback onFinished;
-  const OnboardingFlow({super.key, required this.onFinished});
+  const OnboardingFlow({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,20 @@ class OnboardingFlow extends StatelessWidget {
 
   void _pushSuccess(BuildContext context) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (_) => SuccessScreen(onStartExploring: onFinished),
+      builder: (_) => SuccessScreen(onStartExploring: () => _goToMap(context)),
+    ));
+  }
+
+  void _goToMap(BuildContext context) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (_) => MapScreen(
+        onViewEventDetails: (event) {
+          // TODO: swap for real navigation once Event Detail screen exists
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Open detail for ${event.name}')),
+          );
+        },
+      ),
     ));
   }
 }
