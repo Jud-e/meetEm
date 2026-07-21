@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meetup_app/screens/home.dart';
+import 'package:meetup_app/screens/profile_screen.dart';
 import '../screens/welcome_screen.dart';
 import '../screens/signup.dart';
 import '../screens/login.dart';
@@ -44,13 +45,20 @@ class OnboardingFlow extends StatelessWidget {
   void _goToMap(BuildContext context) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (_) => MapScreen(
-        onViewEventDetails: (event) {
-          // TODO: swap for real navigation once Event Detail screen exists
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Open detail for ${event.name}')),
-          );
-        },
-      ),
+  onViewEventDetails: (event) { /* existing stub */ },
+  onOpenProfile: () {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (_) => ProfileScreen(
+      onLogOut: () {
+        // TODO: real sign-out once Firebase Auth is wired up
+        Navigator.of(context).pop();
+      },
+    ),
+  ));
+},
+),
     ));
   }
+
+
 }

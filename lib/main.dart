@@ -3,10 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:meetup_app/services/onboarding_flow.dart';
 import 'package:meetup_app/theme/app_theme.dart';
 import 'firebase_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await dotenv.load();
   runApp(const MyApp());
 }
 
