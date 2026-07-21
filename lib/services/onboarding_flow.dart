@@ -44,13 +44,14 @@ class OnboardingFlow extends StatelessWidget {
   void _goToMap(BuildContext context) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (_) => MapScreen(
-        onViewEventDetails: (event) {
-          // TODO: swap for real navigation once Event Detail screen exists
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Open detail for ${event.name}')),
-          );
-        },
-      ),
+  onViewEventDetails: (event) { /* existing stub */ },
+  onOpenProfile: () {
+    // TODO: swap for real navigation once a Profile screen exists
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Open profile')),
+    );
+  },
+),
     ));
   }
 }

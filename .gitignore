@@ -48,3 +48,6 @@ app.*.map.json
 lib/firebase_options.dart
 google-services.json
 ios/Runner/GoogleService-Info.plist
+
+#Google cloud console
+android/app/src/main/AndroidManifest.xml
