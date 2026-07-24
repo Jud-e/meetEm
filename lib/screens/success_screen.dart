@@ -4,7 +4,11 @@ class SuccessScreen extends StatelessWidget {
   final String userName;
   final VoidCallback onStartExploring;
 
-  const SuccessScreen({super.key, this.userName = 'Sarah', required this.onStartExploring});
+  const SuccessScreen({
+    super.key,
+    this.userName = 'Sarah',
+    required this.onStartExploring,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +25,11 @@ class SuccessScreen extends StatelessWidget {
               child: const Icon(Icons.check, color: Colors.white, size: 32),
             ),
             const SizedBox(height: 24),
-            Text('Welcome to\nMeetEm, $userName!', textAlign: TextAlign.center, style: theme.textTheme.headlineMedium),
+            Text(
+              'Welcome to\nMeetEm, $userName!',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headlineMedium,
+            ),
             const SizedBox(height: 12),
             Text(
               'Your account is ready. Start meeting people near you.',
@@ -44,7 +52,11 @@ class SuccessScreen extends StatelessWidget {
                 onPressed: onStartExploring,
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text('Start exploring'), SizedBox(width: 8), Icon(Icons.arrow_forward, size: 18)],
+                  children: [
+                    Text('Start exploring'),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_forward, size: 18),
+                  ],
                 ),
               ),
             ),

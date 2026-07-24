@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meetup_app/screens/login.dart';
 
 void main() {
-  Widget wrap(VoidCallback onLoggedIn) => MaterialApp(
-        home: LoginScreen(onLoggedIn: onLoggedIn),
-      );
+  Widget wrap(VoidCallback onLoggedIn) =>
+      MaterialApp(home: LoginScreen(onLoggedIn: onLoggedIn));
 
-  testWidgets('shows validation errors and does not log in with empty fields', (tester) async {
+  testWidgets('shows validation errors and does not log in with empty fields', (
+    tester,
+  ) async {
     var loggedIn = false;
     await tester.pumpWidget(wrap(() => loggedIn = true));
 
@@ -23,7 +24,10 @@ void main() {
     var loggedIn = false;
     await tester.pumpWidget(wrap(() => loggedIn = true));
 
-    await tester.enterText(find.widgetWithText(TextFormField, 'you@example.com'), 'not-an-email');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'you@example.com'),
+      'not-an-email',
+    );
     await tester.tap(find.text('Log in'));
     await tester.pump();
 
@@ -35,8 +39,14 @@ void main() {
     var loggedIn = false;
     await tester.pumpWidget(wrap(() => loggedIn = true));
 
-    await tester.enterText(find.widgetWithText(TextFormField, 'you@example.com'), 'sarah@example.com');
-    await tester.enterText(find.widgetWithText(TextFormField, 'Your password'), 'hunter22');
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'you@example.com'),
+      'sarah@example.com',
+    );
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Your password'),
+      'hunter22',
+    );
     await tester.tap(find.text('Log in'));
     await tester.pump();
 

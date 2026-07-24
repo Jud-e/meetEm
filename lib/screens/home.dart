@@ -10,7 +10,11 @@ class MapScreen extends StatefulWidget {
   final void Function(Event event) onViewEventDetails;
   final VoidCallback onOpenProfile;
 
-  const MapScreen({super.key, required this.onViewEventDetails, required this.onOpenProfile});
+  const MapScreen({
+    super.key,
+    required this.onViewEventDetails,
+    required this.onOpenProfile,
+  });
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -18,8 +22,16 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   // Centered on Metro Vancouver, per the brief's target market.
-  static const _initialPosition = CameraPosition(target: LatLng(49.2400, -123.0000), zoom: 10.5);
-  static const _mapTypeCycle = [MapType.normal, MapType.satellite, MapType.terrain, MapType.hybrid];
+  static const _initialPosition = CameraPosition(
+    target: LatLng(49.2400, -123.0000),
+    zoom: 10.5,
+  );
+  static const _mapTypeCycle = [
+    MapType.normal,
+    MapType.satellite,
+    MapType.terrain,
+    MapType.hybrid,
+  ];
 
   GoogleMapController? _controller;
   bool _is3D = false;
@@ -27,7 +39,9 @@ class _MapScreenState extends State<MapScreen> {
 
   Set<Marker> _buildMarkers(BuildContext context) {
     final theme = Theme.of(context);
-    final hue = theme.brightness == Brightness.dark ? BitmapDescriptor.hueCyan : BitmapDescriptor.hueAzure;
+    final hue = theme.brightness == Brightness.dark
+        ? BitmapDescriptor.hueCyan
+        : BitmapDescriptor.hueAzure;
 
     return mockEvents.map((event) {
       return Marker(
@@ -36,29 +50,39 @@ class _MapScreenState extends State<MapScreen> {
         icon: BitmapDescriptor.defaultMarkerWithHue(
           event.isUgc ? BitmapDescriptor.hueOrange : hue,
         ),
-        onTap: () => EventPreviewSheet.show(context, event, () => widget.onViewEventDetails(event)),
+        onTap: () => EventPreviewSheet.show(
+          context,
+          event,
+          () => widget.onViewEventDetails(event),
+        ),
       );
     }).toSet();
   }
 
   void _toggle3D() {
     setState(() => _is3D = !_is3D);
-    _controller?.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(
-        target: _initialPosition.target,
-        zoom: _initialPosition.zoom,
-        tilt: _is3D ? 60 : 0,
+    _controller?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: _initialPosition.target,
+          zoom: _initialPosition.zoom,
+          tilt: _is3D ? 60 : 0,
+        ),
       ),
-    ));
+    );
   }
 
   void _cycleMapType() {
-    final next = _mapTypeCycle[(_mapTypeCycle.indexOf(_mapType) + 1) % _mapTypeCycle.length];
+    final next =
+        _mapTypeCycle[(_mapTypeCycle.indexOf(_mapType) + 1) %
+            _mapTypeCycle.length];
     setState(() => _mapType = next);
   }
 
   void _recenter() {
-    _controller?.animateCamera(CameraUpdate.newCameraPosition(_initialPosition));
+    _controller?.animateCamera(
+      CameraUpdate.newCameraPosition(_initialPosition),
+    );
   }
 
   @override
@@ -90,7 +114,11 @@ class _MapScreenState extends State<MapScreen> {
           MapBottomSheet(
             suggestedEvents: mockEvents,
             onOpenProfile: widget.onOpenProfile,
-            onSelectEvent: (event) => EventPreviewSheet.show(context, event, () => widget.onViewEventDetails(event)),
+            onSelectEvent: (event) => EventPreviewSheet.show(
+              context,
+              event,
+              () => widget.onViewEventDetails(event),
+            ),
           ),
         ],
       ),

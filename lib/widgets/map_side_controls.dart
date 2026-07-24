@@ -21,21 +21,11 @@ class MapSideControls extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _ControlButton(
-          label: '3D',
-          selected: is3D,
-          onTap: onToggle3D,
-        ),
+        _ControlButton(label: '3D', selected: is3D, onTap: onToggle3D),
         const SizedBox(height: 10),
-        _ControlButton(
-          icon: Icons.layers_outlined,
-          onTap: onCycleMapType,
-        ),
+        _ControlButton(icon: Icons.layers_outlined, onTap: onCycleMapType),
         const SizedBox(height: 10),
-        _ControlButton(
-          icon: Icons.navigation_outlined,
-          onTap: onRecenter,
-        ),
+        _ControlButton(icon: Icons.navigation_outlined, onTap: onRecenter),
       ],
     );
   }
@@ -47,7 +37,12 @@ class _ControlButton extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _ControlButton({this.label, this.icon, this.selected = false, required this.onTap});
+  const _ControlButton({
+    this.label,
+    this.icon,
+    this.selected = false,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +63,9 @@ class _ControlButton extends StatelessWidget {
                     label!,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: selected ? Colors.white : theme.colorScheme.onSurface,
+                      color: selected
+                          ? Colors.white
+                          : theme.colorScheme.onSurface,
                     ),
                   )
                 : Icon(icon, size: 20, color: theme.colorScheme.onSurface),
