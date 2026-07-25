@@ -19,46 +19,60 @@ class OnboardingFlow extends StatelessWidget {
   }
 
   void _pushSignUp(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => SignUpScreen(onCreated: () => _pushProfileSetup(context)),
-    ));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            SignUpScreen(onCreated: () => _pushProfileSetup(context)),
+      ),
+    );
   }
 
   void _pushLogin(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => LoginScreen(onLoggedIn: () => _pushSuccess(context)),
-    ));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(onLoggedIn: () => _pushSuccess(context)),
+      ),
+    );
   }
 
   void _pushProfileSetup(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => UsernamePick(onContinue: () => _pushSuccess(context)),
-    ));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => UsernamePick(onContinue: () => _pushSuccess(context)),
+      ),
+    );
   }
 
   void _pushSuccess(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (_) => SuccessScreen(onStartExploring: () => _goToMap(context)),
-    ));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) =>
+            SuccessScreen(onStartExploring: () => _goToMap(context)),
+      ),
+    );
   }
 
   void _goToMap(BuildContext context) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (_) => MapScreen(
-  onViewEventDetails: (event) { /* existing stub */ },
-  onOpenProfile: () {
-  Navigator.of(context).push(MaterialPageRoute(
-    builder: (_) => ProfileScreen(
-      onLogOut: () {
-        // TODO: real sign-out once Firebase Auth is wired up
-        Navigator.of(context).pop();
-      },
-    ),
-  ));
-},
-),
-    ));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => MapScreen(
+          onViewEventDetails: (event) {
+            /* existing stub */
+          },
+          onOpenProfile: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => ProfileScreen(
+                  onLogOut: () {
+                    // TODO: real sign-out once Firebase Auth is wired up
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
-
-
 }

@@ -25,7 +25,13 @@ class MapBottomSheet extends StatelessWidget {
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 16, offset: Offset(0, -2))],
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 16,
+                offset: Offset(0, -2),
+              ),
+            ],
           ),
           child: ListView(
             controller: scrollController,
@@ -46,16 +52,28 @@ class MapBottomSheet extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: theme.inputDecorationTheme.fillColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.search, size: 20, color: theme.colorScheme.onSurface.withValues(alpha: 0.5)),
+                          Icon(
+                            Icons.search,
+                            size: 20,
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.5,
+                            ),
+                          ),
                           const SizedBox(width: 10),
-                          Text('Search MeetEm', style: theme.textTheme.bodyMedium),
+                          Text(
+                            'Search MeetEm',
+                            style: theme.textTheme.bodyMedium,
+                          ),
                         ],
                       ),
                     ),
@@ -65,8 +83,13 @@ class MapBottomSheet extends StatelessWidget {
                     onTap: onOpenProfile,
                     child: CircleAvatar(
                       radius: 22,
-                      backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
-                      child: Icon(Icons.person, color: theme.colorScheme.primary),
+                      backgroundColor: theme.colorScheme.primary.withValues(
+                        alpha: 0.15,
+                      ),
+                      child: Icon(
+                        Icons.person,
+                        color: theme.colorScheme.primary,
+                      ),
                     ),
                   ),
                 ],
@@ -74,7 +97,10 @@ class MapBottomSheet extends StatelessWidget {
               const SizedBox(height: 20),
               Text('Nearby now', style: theme.textTheme.titleMedium),
               const SizedBox(height: 8),
-              ...suggestedEvents.map((event) => _EventTile(event: event, onTap: () => onSelectEvent(event))),
+              ...suggestedEvents.map(
+                (event) =>
+                    _EventTile(event: event, onTap: () => onSelectEvent(event)),
+              ),
             ],
           ),
         );
@@ -100,7 +126,9 @@ class _EventTile extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 18,
-              backgroundColor: (event.isUgc ? Colors.orange : theme.colorScheme.primary).withValues(alpha: 0.15),
+              backgroundColor:
+                  (event.isUgc ? Colors.orange : theme.colorScheme.primary)
+                      .withValues(alpha: 0.15),
               child: Icon(
                 event.isUgc ? Icons.groups_outlined : Icons.event_outlined,
                 size: 18,
@@ -112,12 +140,23 @@ class _EventTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(event.name, style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface)),
-                  Text('${event.interestCount} interested', style: theme.textTheme.bodyMedium),
+                  Text(
+                    event.name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                  Text(
+                    '${event.interestCount} interested',
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: theme.colorScheme.onSurface.withValues(alpha: 0.3)),
+            Icon(
+              Icons.chevron_right,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.3),
+            ),
           ],
         ),
       ),

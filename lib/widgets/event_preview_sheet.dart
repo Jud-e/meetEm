@@ -6,16 +6,25 @@ class EventPreviewSheet extends StatelessWidget {
   final Event event;
   final VoidCallback onViewDetails;
 
-  const EventPreviewSheet({super.key, required this.event, required this.onViewDetails});
+  const EventPreviewSheet({
+    super.key,
+    required this.event,
+    required this.onViewDetails,
+  });
 
-  static Future<void> show(BuildContext context, Event event, VoidCallback onViewDetails) {
+  static Future<void> show(
+    BuildContext context,
+    Event event,
+    VoidCallback onViewDetails,
+  ) {
     return showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => EventPreviewSheet(event: event, onViewDetails: onViewDetails),
+      builder: (_) =>
+          EventPreviewSheet(event: event, onViewDetails: onViewDetails),
     );
   }
 
@@ -57,20 +66,36 @@ class EventPreviewSheet extends StatelessWidget {
               ),
               child: Text(
                 'COMMUNITY EVENT',
-                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.primary),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
               ),
             ),
-          Text(event.name, style: theme.textTheme.headlineMedium?.copyWith(fontSize: 22)),
+          Text(
+            event.name,
+            style: theme.textTheme.headlineMedium?.copyWith(fontSize: 22),
+          ),
           const SizedBox(height: 10),
           Row(
             children: [
-              Icon(Icons.access_time, size: 16, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+              Icon(
+                Icons.access_time,
+                size: 16,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
               const SizedBox(width: 6),
               Text(_timeLabel, style: theme.textTheme.bodyMedium),
               const SizedBox(width: 16),
-              Icon(Icons.people_outline, size: 16, color: theme.colorScheme.onSurface.withValues(alpha: 0.6)),
+              Icon(
+                Icons.people_outline,
+                size: 16,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
               const SizedBox(width: 6),
-              Text('${event.interestCount} interested', style: theme.textTheme.bodyMedium),
+              Text(
+                '${event.interestCount} interested',
+                style: theme.textTheme.bodyMedium,
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -81,7 +106,11 @@ class EventPreviewSheet extends StatelessWidget {
             },
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('View details'), SizedBox(width: 8), Icon(Icons.arrow_forward, size: 18)],
+              children: [
+                Text('View details'),
+                SizedBox(width: 8),
+                Icon(Icons.arrow_forward, size: 18),
+              ],
             ),
           ),
         ],

@@ -32,7 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('WELCOME BACK', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.primary)),
+              Text(
+                'WELCOME BACK',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
               const SizedBox(height: 8),
               Text('Log in', style: theme.textTheme.headlineMedium),
               const SizedBox(height: 4),
@@ -46,12 +51,24 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  Expanded(child: Divider(color: theme.colorScheme.onSurface.withValues(alpha: 0.15))),
+                  Expanded(
+                    child: Divider(
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.15,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text('or', style: theme.textTheme.bodyMedium),
                   ),
-                  Expanded(child: Divider(color: theme.colorScheme.onSurface.withValues(alpha: 0.15))),
+                  Expanded(
+                    child: Divider(
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.15,
+                      ),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -60,8 +77,13 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(hintText: 'you@example.com', prefixIcon: Icon(Icons.mail_outline)),
-                validator: (v) => (v == null || !v.contains('@')) ? 'Enter a valid email' : null,
+                decoration: const InputDecoration(
+                  hintText: 'you@example.com',
+                  prefixIcon: Icon(Icons.mail_outline),
+                ),
+                validator: (v) => (v == null || !v.contains('@'))
+                    ? 'Enter a valid email'
+                    : null,
               ),
               const SizedBox(height: 16),
               Text('Password', style: theme.textTheme.bodyMedium),
@@ -69,15 +91,22 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _passwordCtrl,
                 obscureText: true,
-                decoration: const InputDecoration(hintText: 'Your password', prefixIcon: Icon(Icons.lock_outline)),
-                validator: (v) => (v == null || v.isEmpty) ? 'Enter your password' : null,
+                decoration: const InputDecoration(
+                  hintText: 'Your password',
+                  prefixIcon: Icon(Icons.lock_outline),
+                ),
+                validator: (v) =>
+                    (v == null || v.isEmpty) ? 'Enter your password' : null,
               ),
               const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {}, // TODO: forgot password flow
-                  child: Text('Forgot password?', style: TextStyle(color: theme.colorScheme.primary)),
+                  child: Text(
+                    'Forgot password?',
+                    style: TextStyle(color: theme.colorScheme.primary),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -87,7 +116,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text('Log in'), SizedBox(width: 8), Icon(Icons.arrow_forward, size: 18)],
+                  children: [
+                    Text('Log in'),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_forward, size: 18),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),

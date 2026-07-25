@@ -23,7 +23,12 @@ class _UsernamePickState extends State<UsernamePick> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: Text('STEP 2 OF 3', style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.primary)),
+        title: Text(
+          'STEP 2 OF 3',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.primary,
+          ),
+        ),
         centerTitle: false,
       ),
       body: Padding(
@@ -34,15 +39,24 @@ class _UsernamePickState extends State<UsernamePick> {
             const SizedBox(height: 12),
             Text('Pick a username', style: theme.textTheme.headlineMedium),
             const SizedBox(height: 4),
-            Text('You can always change this later.', style: theme.textTheme.bodyMedium),
+            Text(
+              'You can always change this later.',
+              style: theme.textTheme.bodyMedium,
+            ),
             const SizedBox(height: 28),
             Center(
               child: Stack(
                 children: [
                   CircleAvatar(
                     radius: 44,
-                    backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
-                    child: Icon(Icons.person_outline, size: 40, color: theme.colorScheme.primary),
+                    backgroundColor: theme.colorScheme.primary.withValues(
+                      alpha: 0.15,
+                    ),
+                    child: Icon(
+                      Icons.person_outline,
+                      size: 40,
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
                   Positioned(
                     right: 0,
@@ -52,9 +66,16 @@ class _UsernamePickState extends State<UsernamePick> {
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: theme.scaffoldBackgroundColor, width: 2),
+                        border: Border.all(
+                          color: theme.scaffoldBackgroundColor,
+                          width: 2,
+                        ),
                       ),
-                      child: const Icon(Icons.add, size: 16, color: Colors.white),
+                      child: const Icon(
+                        Icons.add,
+                        size: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -65,7 +86,10 @@ class _UsernamePickState extends State<UsernamePick> {
             const SizedBox(height: 6),
             TextField(
               controller: _usernameCtrl,
-              decoration: const InputDecoration(hintText: '@sarah.chen', prefixIcon: Icon(Icons.alternate_email)),
+              decoration: const InputDecoration(
+                hintText: '@sarah.chen',
+                prefixIcon: Icon(Icons.alternate_email),
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -77,7 +101,11 @@ class _UsernamePickState extends State<UsernamePick> {
               onPressed: widget.onContinue,
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text('Continue'), SizedBox(width: 8), Icon(Icons.arrow_forward, size: 18)],
+                children: [
+                  Text('Continue'),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_forward, size: 18),
+                ],
               ),
             ),
             const SizedBox(height: 24),
