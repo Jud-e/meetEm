@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:meetup_app/screens/home.dart';
 import 'package:meetup_app/screens/profile_screen.dart';
+import 'package:meetup_app/screens/event_detail.dart';
+import 'package:meetup_app/models/event.dart';
 import '../screens/welcome_screen.dart';
 import '../screens/signup.dart';
 import '../screens/login.dart';
 import '../screens/username_pick.dart';
-import '../screens/success_screen.dart'; // adjust if you placed this somewhere else
+import '../screens/success_screen.dart';
 
 class OnboardingFlow extends StatelessWidget {
   const OnboardingFlow({super.key});
@@ -21,8 +23,7 @@ class OnboardingFlow extends StatelessWidget {
   void _pushSignUp(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) =>
-            SignUpScreen(onCreated: () => _pushProfileSetup(context)),
+        builder: (_) => SignUpScreen(onCreated: () => _pushProfileSetup(context)),
       ),
     );
   }
@@ -46,8 +47,7 @@ class OnboardingFlow extends StatelessWidget {
   void _pushSuccess(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) =>
-            SuccessScreen(onStartExploring: () => _goToMap(context)),
+        builder: (_) => SuccessScreen(onStartExploring: () => _goToMap(context)),
       ),
     );
   }
@@ -56,9 +56,7 @@ class OnboardingFlow extends StatelessWidget {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (_) => MapScreen(
-          onViewEventDetails: (event) {
-            /* existing stub */
-          },
+          onViewEventDetails: (event) => _pushEventDetail(context, event),
           onOpenProfile: () {
             Navigator.of(context).push(
               MaterialPageRoute(
@@ -70,6 +68,22 @@ class OnboardingFlow extends StatelessWidget {
                 ),
               ),
             );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _pushEventDetail(BuildContext context, Event event) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => EventDetailScreen(
+          event: event,
+          onJoinGroup: (group) {
+            // TODO: real join logic — next step
+          },
+          onCreateGroup: (event) {
+            // TODO: real create logic — next step
           },
         ),
       ),
