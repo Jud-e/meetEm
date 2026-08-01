@@ -11,7 +11,8 @@ class ChatRepository extends ChangeNotifier {
 
   final Map<String, List<ChatMessage>> _messagesByGroup = {};
 
-  List<ChatMessage> messagesForGroup(String groupId) => List.unmodifiable(_messagesByGroup[groupId] ?? const []);
+  List<ChatMessage> messagesForGroup(String groupId) =>
+      List.unmodifiable(_messagesByGroup[groupId] ?? const []);
 
   void sendMessage(String groupId, String text) {
     final trimmed = text.trim();

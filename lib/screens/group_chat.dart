@@ -8,7 +8,11 @@ class GroupChatScreen extends StatefulWidget {
   final Group group;
   final String eventName;
 
-  const GroupChatScreen({super.key, required this.group, required this.eventName});
+  const GroupChatScreen({
+    super.key,
+    required this.group,
+    required this.eventName,
+  });
 
   @override
   State<GroupChatScreen> createState() => _GroupChatScreenState();
@@ -52,7 +56,10 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Center(
-              child: Text('${widget.group.memberCount}/${Group.capacity}', style: theme.textTheme.bodyMedium),
+              child: Text(
+                '${widget.group.memberCount}/${Group.capacity}',
+                style: theme.textTheme.bodyMedium,
+              ),
             ),
           ),
         ],
@@ -76,7 +83,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   controller: _scrollCtrl,
                   padding: const EdgeInsets.all(16),
                   itemCount: messages.length,
-                  itemBuilder: (context, i) => _MessageBubble(message: messages[i]),
+                  itemBuilder: (context, i) =>
+                      _MessageBubble(message: messages[i]),
                 );
               },
             ),
@@ -90,7 +98,9 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                   Expanded(
                     child: TextField(
                       controller: _textCtrl,
-                      decoration: const InputDecoration(hintText: 'Message the group…'),
+                      decoration: const InputDecoration(
+                        hintText: 'Message the group…',
+                      ),
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => _send(),
                     ),
@@ -122,7 +132,9 @@ class _MessageBubble extends StatelessWidget {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
+        ),
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(
@@ -135,7 +147,9 @@ class _MessageBubble extends StatelessWidget {
             if (!isMe)
               Text(
                 message.senderName,
-                style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.primary),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
               ),
             Text(
               message.text,
