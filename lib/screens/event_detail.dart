@@ -75,10 +75,12 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   String get _timeLabel {
     final diff = widget.event.time.difference(DateTime.now());
-    if (diff.inDays >= 1)
+    if (diff.inDays >= 1) {
       return 'In ${diff.inDays} day${diff.inDays == 1 ? '' : 's'}';
-    if (diff.inHours >= 1)
+    }
+    if (diff.inHours >= 1) {
       return 'In ${diff.inHours} hour${diff.inHours == 1 ? '' : 's'}';
+    }
     return 'Starting soon';
   }
 
