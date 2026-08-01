@@ -23,7 +23,8 @@ class OnboardingFlow extends StatelessWidget {
   void _pushSignUp(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => SignUpScreen(onCreated: () => _pushProfileSetup(context)),
+        builder: (_) =>
+            SignUpScreen(onCreated: () => _pushProfileSetup(context)),
       ),
     );
   }
@@ -47,7 +48,8 @@ class OnboardingFlow extends StatelessWidget {
   void _pushSuccess(BuildContext context) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => SuccessScreen(onStartExploring: () => _goToMap(context)),
+        builder: (_) =>
+            SuccessScreen(onStartExploring: () => _goToMap(context)),
       ),
     );
   }

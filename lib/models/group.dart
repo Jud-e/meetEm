@@ -5,7 +5,11 @@ class Group {
 
   static const capacity = 20;
 
-  const Group({required this.id, required this.eventId, required this.memberCount});
+  const Group({
+    required this.id,
+    required this.eventId,
+    required this.memberCount,
+  });
 
   bool get isFull => memberCount >= capacity;
 }
