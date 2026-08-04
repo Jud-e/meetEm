@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SuccessScreen extends StatelessWidget {
-  final String userName;
   final VoidCallback onStartExploring;
 
-  const SuccessScreen({
-    super.key,
-    this.userName = 'Sarah',
-    required this.onStartExploring,
-  });
+  const SuccessScreen({super.key, required this.onStartExploring});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final user = FirebaseAuth.instance.currentUser;
+    final firstName = (user?.displayName?.isNotEmpty == true)
+        ? user!.displayName!.split(' ').first
+        : 'there';
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -26,7 +27,7 @@ class SuccessScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Welcome to\nMeetEm, $userName!',
+              'Welcome to\nMeetEm, $firstName!',
               textAlign: TextAlign.center,
               style: theme.textTheme.headlineMedium,
             ),

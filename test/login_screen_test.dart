@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:meetup_app/screens/login.dart';
 
 void main() {
-  Widget wrap(VoidCallback onLoggedIn) =>
-      MaterialApp(home: LoginScreen(onLoggedIn: onLoggedIn));
+  Widget wrap(VoidCallback onLoggedIn, {MockFirebaseAuth? auth}) => MaterialApp(
+    home: LoginScreen(onLoggedIn: onLoggedIn, auth: auth ?? MockFirebaseAuth()),
+  );
 
   testWidgets('shows validation errors and does not log in with empty fields', (
     tester,
@@ -35,9 +37,21 @@ void main() {
     expect(loggedIn, isFalse);
   });
 
-  testWidgets('calls onLoggedIn when both fields are valid', (tester) async {
+  testWidgets('calls onLoggedIn when Firebase sign-in succeeds', (
+    tester,
+  ) async {
     var loggedIn = false;
-    await tester.pumpWidget(wrap(() => loggedIn = true));
+    // MockFirebaseAuth with a pre-registered user simulates a successful
+    // signInWithEmailAndPassword call without touching real Firebase.
+    final mockAuth = MockFirebaseAuth(
+      mockUser: MockUser(
+        uid: 'test-uid',
+        email: 'sarah@example.com',
+        displayName: 'Sarah Chen',
+      ),
+    );
+
+    await tester.pumpWidget(wrap(() => loggedIn = true, auth: mockAuth));
 
     await tester.enterText(
       find.widgetWithText(TextFormField, 'you@example.com'),
@@ -48,7 +62,7 @@ void main() {
       'hunter22',
     );
     await tester.tap(find.widgetWithText(ElevatedButton, 'Log in'));
-    await tester.pump();
+    await tester.pumpAndSettle(); // sign-in is async — let it resolve
 
     expect(loggedIn, isTrue);
   });

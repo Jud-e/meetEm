@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final String displayName;
-  final String username;
   final VoidCallback onLogOut;
 
-  const ProfileScreen({
-    super.key,
-    this.displayName = 'Sarah Chen',
-    this.username = '@sarah.chen',
-    required this.onLogOut,
-  });
+  const ProfileScreen({super.key, required this.onLogOut});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final user = FirebaseAuth.instance.currentUser;
+    final displayName = user?.displayName?.isNotEmpty == true
+        ? user!.displayName!
+        : 'MeetEm user';
+    final email = user?.email ?? '';
+
     return Scaffold(
       appBar: AppBar(title: const Text('Profile')),
       body: ListView(
@@ -64,7 +64,7 @@ class ProfileScreen extends StatelessWidget {
                   style: theme.textTheme.headlineMedium?.copyWith(fontSize: 22),
                 ),
                 const SizedBox(height: 2),
-                Text(username, style: theme.textTheme.bodyMedium),
+                Text(email, style: theme.textTheme.bodyMedium),
               ],
             ),
           ),
