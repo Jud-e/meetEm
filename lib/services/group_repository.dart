@@ -3,34 +3,53 @@ import '../models/group.dart';
 import 'mock_groups.dart' show mockGroups;
 
 /// In-memory group store standing in for Firestore until the backend is wired up.
-/// Notifies listeners on join/create so screens can rebuild reactively.
+/// Notifies listeners on join/create/leave so screens can rebuild reactively.
 class GroupRepository extends ChangeNotifier {
   GroupRepository._() : _groups = List.of(mockGroups);
   static final instance = GroupRepository._();
 
   final List<Group> _groups;
 
-  /// Groups for [eventId], sorted fullest-first — this is the brief's
-  /// "dense-fill" rule: bias joins toward the fullest eligible group
-  /// rather than spreading people thinly across many small ones.
+  /// Which groups the current (placeholder) user belongs to. Lives here,
+  /// not in screen state, so it survives navigation between screens.
+  final Set<String> _joinedGroupIds = {};
+
+  /// Groups the user explicitly left with "don't rejoin" — blocks future
+  /// joins to that specific group for this (placeholder) user.
+  final Set<String> _excludedGroupIds = {};
+
+  /// Groups for [eventId], sorted fullest-first — the brief's "dense-fill"
+  /// rule: bias joins toward the fullest eligible group rather than
+  /// spreading people thinly across many small ones.
   List<Group> groupsForEvent(String eventId) {
     final list = _groups.where((g) => g.eventId == eventId).toList();
     list.sort((a, b) => b.memberCount.compareTo(a.memberCount));
     return list;
   }
 
-  /// Returns false if the group is already full (caller should show
-  /// "Start a new group" instead in that case).
+  bool isJoined(String groupId) => _joinedGroupIds.contains(groupId);
+  bool isExcluded(String groupId) => _excludedGroupIds.contains(groupId);
+
+  /// Returns true if the user is now (or already was) a member.
+  /// Returns false if the group is full, or if the user previously left
+  /// with "don't rejoin".
   bool joinGroup(String groupId) {
+    if (_joinedGroupIds.contains(groupId)) {
+      return true; // already a member — no-op
+    }
+    if (_excludedGroupIds.contains(groupId)) return false;
+
     final index = _groups.indexWhere((g) => g.id == groupId);
     if (index == -1) return false;
     final group = _groups[index];
     if (group.isFull) return false;
+
     _groups[index] = Group(
       id: group.id,
       eventId: group.eventId,
       memberCount: group.memberCount + 1,
     );
+    _joinedGroupIds.add(groupId);
     notifyListeners();
     return true;
   }
@@ -42,14 +61,18 @@ class GroupRepository extends ChangeNotifier {
       memberCount: 1,
     );
     _groups.add(group);
+    _joinedGroupIds.add(group.id);
     notifyListeners();
     return group;
   }
 
-  /// [dontRejoin] is accepted now for API shape but not enforced yet —
-  /// real "excluded from this group" tracking needs per-user membership
-  /// docs, which arrives with real auth.
+  /// [dontRejoin] = true excludes this group going forward (brief section
+  /// 4.3's "Leave and don't rejoin"). false just opens the spot back up.
   void leaveGroup(String groupId, {bool dontRejoin = false}) {
+    if (!_joinedGroupIds.contains(groupId)) return;
+    _joinedGroupIds.remove(groupId);
+    if (dontRejoin) _excludedGroupIds.add(groupId);
+
     final index = _groups.indexWhere((g) => g.id == groupId);
     if (index == -1) return;
     final group = _groups[index];

@@ -3,6 +3,7 @@ import '../models/chat_message.dart';
 import '../models/group.dart';
 import '../services/chat_repository.dart';
 import '../services/current_user.dart';
+import '../services/group_repository.dart';
 
 class GroupChatScreen extends StatefulWidget {
   final Group group;
@@ -20,8 +21,68 @@ class GroupChatScreen extends StatefulWidget {
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
   final _repo = ChatRepository.instance;
+  final _groupRepo = GroupRepository.instance;
   final _textCtrl = TextEditingController();
   final _scrollCtrl = ScrollController();
+
+  Future<void> _confirmLeave() async {
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        final theme = Theme.of(context);
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Leave this group?', style: theme.textTheme.titleMedium),
+                const SizedBox(height: 4),
+                Text(
+                  'Your spot opens up for someone else to join.',
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Leave'),
+                  subtitle: const Text('You can rejoin later if there\'s room'),
+                  onTap: () => Navigator.of(context).pop('leave'),
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(Icons.block, color: theme.colorScheme.error),
+                  title: const Text('Leave and don\'t rejoin'),
+                  subtitle: const Text(
+                    'You won\'t be able to join this specific group again',
+                  ),
+                  onTap: () => Navigator.of(context).pop('leave_forever'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (choice == null || !mounted) return;
+
+    _groupRepo.leaveGroup(
+      widget.group.id,
+      dontRejoin: choice == 'leave_forever',
+    );
+    if (mounted) Navigator.of(context).pop();
+  }
 
   void _send() {
     if (_textCtrl.text.trim().isEmpty) return;
@@ -54,13 +115,18 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
         title: Text(widget.eventName, style: theme.textTheme.titleMedium),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.only(right: 8),
             child: Center(
               child: Text(
                 '${widget.group.memberCount}/${Group.capacity}',
                 style: theme.textTheme.bodyMedium,
               ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Leave group',
+            onPressed: _confirmLeave,
           ),
         ],
       ),
@@ -127,7 +193,7 @@ class _MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isMe = message.senderId == currentUserId;
+    final isMe = message.senderId == currentUserId();
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,

@@ -23,7 +23,6 @@ class EventDetailScreen extends StatefulWidget {
 
 class _EventDetailScreenState extends State<EventDetailScreen> {
   final _repo = GroupRepository.instance;
-  final _joinedGroupIds = <String>{};
 
   late bool _interested;
   late int _interestCount;
@@ -42,20 +41,26 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
     });
   }
 
-  void _handleJoin(Group group) {
-    final joined = _repo.joinGroup(group.id);
-    if (!joined) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'That group just filled up — try another or start a new one.',
+  /// Handles both "join then open chat" and "already a member, just
+  /// reopen chat" — membership is checked against the shared repository,
+  /// not local state, so this works correctly no matter how many times
+  /// this screen has been pushed fresh.
+  void _handleGroupTap(Group group) {
+    final alreadyMember = _repo.isJoined(group.id);
+    if (!alreadyMember) {
+      final joined = _repo.joinGroup(group.id);
+      if (!joined) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'That group just filled up — try another or start a new one.',
+            ),
           ),
-        ),
-      );
-      return;
+        );
+        return;
+      }
+      widget.onJoinGroup?.call(group);
     }
-    setState(() => _joinedGroupIds.add(group.id));
-    widget.onJoinGroup?.call(group);
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) =>
@@ -66,7 +71,6 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
   void _handleCreate() {
     final group = _repo.createGroup(widget.event.id);
-    setState(() => _joinedGroupIds.add(group.id));
     widget.onCreateGroup?.call(widget.event);
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -201,8 +205,9 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                 ...groups.map(
                   (group) => _GroupTile(
                     group: group,
-                    joined: _joinedGroupIds.contains(group.id),
-                    onJoin: () => _handleJoin(group),
+                    isMember: _repo.isJoined(group.id),
+                    isExcluded: _repo.isExcluded(group.id),
+                    onTap: () => _handleGroupTap(group),
                   ),
                 ),
 
@@ -229,51 +234,75 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
 
 class _GroupTile extends StatelessWidget {
   final Group group;
-  final bool joined;
-  final VoidCallback onJoin;
+  final bool isMember;
+  final bool isExcluded;
+  final VoidCallback onTap;
   const _GroupTile({
     required this.group,
-    required this.joined,
-    required this.onJoin,
+    required this.isMember,
+    required this.isExcluded,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
-            child: Icon(
-              Icons.groups_outlined,
-              size: 18,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              '${group.memberCount}/${Group.capacity} members',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface,
+    // Members can always reopen their own group, even if it's since filled
+    // up with other people. Non-members need room AND not to be excluded.
+    final canTap = isMember || (!group.isFull && !isExcluded);
+
+    return InkWell(
+      onTap: canTap ? onTap : null,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: theme.colorScheme.primary.withValues(
+                alpha: 0.15,
               ),
-            ),
-          ),
-          if (joined)
-            Text(
-              'Joined',
-              style: theme.textTheme.bodyMedium?.copyWith(
+              child: Icon(
+                Icons.groups_outlined,
+                size: 18,
                 color: theme.colorScheme.primary,
               ),
-            )
-          else if (group.isFull)
-            Text('Full', style: theme.textTheme.bodyMedium)
-          else
-            TextButton(onPressed: onJoin, child: const Text('Join')),
-        ],
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                '${group.memberCount}/${Group.capacity} members',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface,
+                ),
+              ),
+            ),
+            if (isMember)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Joined',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: theme.colorScheme.primary,
+                  ),
+                ],
+              )
+            else if (isExcluded)
+              Text('Left', style: theme.textTheme.bodyMedium)
+            else if (group.isFull)
+              Text('Full', style: theme.textTheme.bodyMedium)
+            else
+              TextButton(onPressed: onTap, child: const Text('Join')),
+          ],
+        ),
       ),
     );
   }

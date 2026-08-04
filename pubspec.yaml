@@ -21,6 +21,8 @@ dependencies:
 
   # Maps
   google_maps_flutter: ^2.9.0
+  firebase: ^9.0.3
+  firebase_auth_mocks: ^0.14.2
 
 dev_dependencies:
   flutter_test:

@@ -20,8 +20,8 @@ class ChatRepository extends ChangeNotifier {
     final message = ChatMessage(
       id: 'm-${DateTime.now().microsecondsSinceEpoch}',
       groupId: groupId,
-      senderId: currentUserId,
-      senderName: currentUserName,
+      senderId: currentUserId(),
+      senderName: currentUserName(),
       text: trimmed,
       sentAt: DateTime.now(),
     );

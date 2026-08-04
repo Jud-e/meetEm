@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUpScreen extends StatefulWidget {
   final VoidCallback onCreated;
-  const SignUpScreen({super.key, required this.onCreated});
+
+  /// Injectable for tests — defaults to the real FirebaseAuth.instance.
+  final FirebaseAuth? auth;
+
+  const SignUpScreen({super.key, required this.onCreated, this.auth});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -15,6 +20,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passwordCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
 
+  late final FirebaseAuth _auth = widget.auth ?? FirebaseAuth.instance;
+  bool _submitting = false;
+  String? _errorMessage;
+
   @override
   void dispose() {
     _nameCtrl.dispose();
@@ -22,6 +31,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordCtrl.dispose();
     _confirmCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() {
+      _submitting = true;
+      _errorMessage = null;
+    });
+    try {
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+      );
+      await credential.user?.updateDisplayName(_nameCtrl.text.trim());
+      await credential.user
+          ?.reload(); // ensures currentUser reflects the new name immediately
+      if (mounted) widget.onCreated();
+    } on FirebaseAuthException catch (e) {
+      setState(() => _errorMessage = _messageFor(e.code));
+    } catch (_) {
+      setState(() => _errorMessage = 'Something went wrong. Please try again.');
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  String _messageFor(String code) {
+    switch (code) {
+      case 'email-already-in-use':
+        return 'That email is already registered — try logging in instead.';
+      case 'weak-password':
+        return 'Password is too weak — use at least 8 characters.';
+      case 'invalid-email':
+        return 'That email address looks invalid.';
+      default:
+        return 'Something went wrong. Please try again.';
+    }
   }
 
   @override
@@ -50,36 +96,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 24),
-              OutlinedButton.icon(
-                onPressed: () {}, // TODO: wire up Google Sign-In
-                icon: const Icon(Icons.g_mobiledata, size: 24),
-                label: const Text('Continue with Google'),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.15,
-                      ),
-                    ),
+              if (_errorMessage != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.error.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text('or', style: theme.textTheme.bodyMedium),
+                  child: Text(
+                    _errorMessage!,
+                    style: TextStyle(color: theme.colorScheme.error),
                   ),
-                  Expanded(
-                    child: Divider(
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.15,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              _FieldLabel('Full name'),
+                ),
+                const SizedBox(height: 16),
+              ],
+              Text('Full name', style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 6),
               TextFormField(
                 controller: _nameCtrl,
                 decoration: const InputDecoration(
@@ -90,7 +123,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     (v == null || v.trim().isEmpty) ? 'Enter your name' : null,
               ),
               const SizedBox(height: 16),
-              _FieldLabel('Email address'),
+              Text('Email address', style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 6),
               TextFormField(
                 controller: _emailCtrl,
                 keyboardType: TextInputType.emailAddress,
@@ -103,7 +137,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     : null,
               ),
               const SizedBox(height: 16),
-              _FieldLabel('Password'),
+              Text('Password', style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 6),
               TextFormField(
                 controller: _passwordCtrl,
                 obscureText: true,
@@ -115,7 +150,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     (v == null || v.length < 8) ? 'Minimum 8 characters' : null,
               ),
               const SizedBox(height: 16),
-              _FieldLabel('Confirm password'),
+              Text('Confirm password', style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 6),
               TextFormField(
                 controller: _confirmCtrl,
                 obscureText: true,
@@ -127,36 +163,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 28),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) widget.onCreated();
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Continue'),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, size: 18),
-                  ],
-                ),
+                onPressed: _submitting ? null : _submit,
+                child: _submitting
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Continue'),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward, size: 18),
+                        ],
+                      ),
               ),
               const SizedBox(height: 24),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class _FieldLabel extends StatelessWidget {
-  final String text;
-  const _FieldLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Text(text, style: Theme.of(context).textTheme.bodyMedium),
     );
   }
 }

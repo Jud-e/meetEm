@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meetup_app/screens/home.dart';
 import 'package:meetup_app/screens/profile_screen.dart';
 import 'package:meetup_app/screens/event_detail.dart';
@@ -63,9 +64,16 @@ class OnboardingFlow extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => ProfileScreen(
-                  onLogOut: () {
-                    // TODO: real sign-out once Firebase Auth is wired up
-                    Navigator.of(context).pop();
+                  onLogOut: () async {
+                    await FirebaseAuth.instance.signOut();
+                    if (context.mounted) {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (_) => const OnboardingFlow(),
+                        ),
+                        (route) => false,
+                      );
+                    }
                   },
                 ),
               ),
@@ -77,18 +85,8 @@ class OnboardingFlow extends StatelessWidget {
   }
 
   void _pushEventDetail(BuildContext context, Event event) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => EventDetailScreen(
-          event: event,
-          onJoinGroup: (group) {
-            // TODO: real join logic — next step
-          },
-          onCreateGroup: (event) {
-            // TODO: real create logic — next step
-          },
-        ),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => EventDetailScreen(event: event)));
   }
 }
